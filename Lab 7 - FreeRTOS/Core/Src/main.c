@@ -6,6 +6,13 @@
   ******************************************************************************
   * @attention
   *
+  * МГТУ пМ. Н.Э.БАУМАНА
+  * Лекция-практикум "SM32CubeIDE + FreeRTOS. Примеры задач, очереди, семафоров"
+  * Vladimir Leonidov [BMSTU]
+  * https://www.youtube.com/watch?v=JKkyF53AAM4
+  * проект на GIT:
+  * https://github.com/Leonidov/STM32-Labs/tree/master/Lab%207%20-%20FreeRTOS
+  *
   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
@@ -50,7 +57,7 @@ typedef struct {
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-ADC_HandleTypeDef hadc1;
+ ADC_HandleTypeDef hadc1;
 
 TIM_HandleTypeDef htim4;
 
@@ -62,10 +69,10 @@ uint32_t defaultTaskBuffer[ 128 ];
 osStaticThreadDef_t defaultTaskControlBlock;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
-  .stack_mem = &defaultTaskBuffer[0],
-  .stack_size = sizeof(defaultTaskBuffer),
   .cb_mem = &defaultTaskControlBlock,
   .cb_size = sizeof(defaultTaskControlBlock),
+  .stack_mem = &defaultTaskBuffer[0],
+  .stack_size = sizeof(defaultTaskBuffer),
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for LED1Task */
@@ -74,10 +81,10 @@ uint32_t LED1TaskBuffer[ 128 ];
 osStaticThreadDef_t LED1TaskControlBlock;
 const osThreadAttr_t LED1Task_attributes = {
   .name = "LED1Task",
-  .stack_mem = &LED1TaskBuffer[0],
-  .stack_size = sizeof(LED1TaskBuffer),
   .cb_mem = &LED1TaskControlBlock,
   .cb_size = sizeof(LED1TaskControlBlock),
+  .stack_mem = &LED1TaskBuffer[0],
+  .stack_size = sizeof(LED1TaskBuffer),
   .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for LED2Task */
@@ -86,10 +93,10 @@ uint32_t LED2TaskBuffer[ 128 ];
 osStaticThreadDef_t LED2TaskControlBlock;
 const osThreadAttr_t LED2Task_attributes = {
   .name = "LED2Task",
-  .stack_mem = &LED2TaskBuffer[0],
-  .stack_size = sizeof(LED2TaskBuffer),
   .cb_mem = &LED2TaskControlBlock,
   .cb_size = sizeof(LED2TaskControlBlock),
+  .stack_mem = &LED2TaskBuffer[0],
+  .stack_size = sizeof(LED2TaskBuffer),
   .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for ReadBtnTask */
@@ -98,10 +105,10 @@ uint32_t ReadBtnTaskBuffer[ 128 ];
 osStaticThreadDef_t ReadBtnTaskControlBlock;
 const osThreadAttr_t ReadBtnTask_attributes = {
   .name = "ReadBtnTask",
-  .stack_mem = &ReadBtnTaskBuffer[0],
-  .stack_size = sizeof(ReadBtnTaskBuffer),
   .cb_mem = &ReadBtnTaskControlBlock,
   .cb_size = sizeof(ReadBtnTaskControlBlock),
+  .stack_mem = &ReadBtnTaskBuffer[0],
+  .stack_size = sizeof(ReadBtnTaskBuffer),
   .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for LED3Task */
@@ -110,10 +117,10 @@ uint32_t LED3TaskBuffer[ 128 ];
 osStaticThreadDef_t LED3TaskControlBlock;
 const osThreadAttr_t LED3Task_attributes = {
   .name = "LED3Task",
-  .stack_mem = &LED3TaskBuffer[0],
-  .stack_size = sizeof(LED3TaskBuffer),
   .cb_mem = &LED3TaskControlBlock,
   .cb_size = sizeof(LED3TaskControlBlock),
+  .stack_mem = &LED3TaskBuffer[0],
+  .stack_size = sizeof(LED3TaskBuffer),
   .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for ADCTask */
@@ -122,10 +129,10 @@ uint32_t ADCTaskBuffer[ 128 ];
 osStaticThreadDef_t ADCTaskControlBlock;
 const osThreadAttr_t ADCTask_attributes = {
   .name = "ADCTask",
-  .stack_mem = &ADCTaskBuffer[0],
-  .stack_size = sizeof(ADCTaskBuffer),
   .cb_mem = &ADCTaskControlBlock,
   .cb_size = sizeof(ADCTaskControlBlock),
+  .stack_mem = &ADCTaskBuffer[0],
+  .stack_size = sizeof(ADCTaskBuffer),
   .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for UARTTask */
@@ -134,10 +141,10 @@ uint32_t UARTTaskBuffer[ 128 ];
 osStaticThreadDef_t UARTTaskControlBlock;
 const osThreadAttr_t UARTTask_attributes = {
   .name = "UARTTask",
-  .stack_mem = &UARTTaskBuffer[0],
-  .stack_size = sizeof(UARTTaskBuffer),
   .cb_mem = &UARTTaskControlBlock,
   .cb_size = sizeof(UARTTaskControlBlock),
+  .stack_mem = &UARTTaskBuffer[0],
+  .stack_size = sizeof(UARTTaskBuffer),
   .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for UARTQueue */
@@ -233,7 +240,7 @@ int main(void)
 
   /* Create the semaphores(s) */
   /* creation of BtnSem */
-  BtnSemHandle = osSemaphoreNew(1, 0, &BtnSem_attributes);
+  BtnSemHandle = osSemaphoreNew(1, 1, &BtnSem_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -324,6 +331,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -343,9 +351,11 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Enables the Clock Security System
   */
   HAL_RCC_EnableCSS();
+
   /** Configure the Systick interrupt time
   */
   __HAL_RCC_PLLI2S_ENABLE();
@@ -368,6 +378,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 1 */
 
   /* USER CODE END ADC1_Init 1 */
+
   /** Common config
   */
   hadc1.Instance = ADC1;
@@ -381,6 +392,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_14;
@@ -679,7 +691,7 @@ void StartUARTTask(void *argument)
   /* USER CODE END StartUARTTask */
 }
 
- /**
+/**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM6 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
@@ -731,5 +743,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
